@@ -17,7 +17,7 @@
         "cli"
     ],
     "author": "Gautam Suthar <iamgautamsuthar@outlook.com> (https://github.com/callmegautam)",
-    "license": "ISC",
+    "license": "MIT",
     "jest": {
         "transform": {}
     },
