@@ -1,0 +1,30 @@
+{
+    "name": "flux",
+    "version": "0.1.0",
+    "description": "Flux is a simple, lightweight package manager for managing dependencies in your project, allowing easy installation of npm packages.",
+    "main": "./bin/flux.js",
+    "type": "module",
+    "bin": {
+        "flux": "./bin/flux.js"
+    },
+    "scripts": {
+        "build": "pkg ./src/index.js --targets node16-win-x64 --output flux.exe"
+    },
+    "keywords": [
+        "package manager",
+        "flux",
+        "npm",
+        "cli"
+    ],
+    "author": "Gautam Suthar <iamgautamsuthar@gmail.com> (http://github.com/@iamgautamsuthar)",
+    "license": "ISC",
+    "jest": {
+        "transform": {}
+    },
+    "dependencies": {
+        "axios": "^1.7.9",
+        "chalk": "^5.4.1",
+        "commander": "^13.1.0",
+        "tar": "^7.4.3"
+    }
+}
