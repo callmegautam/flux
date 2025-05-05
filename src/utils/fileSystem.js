@@ -14,7 +14,11 @@ export const readPackageJson = async () => {
     } catch (error) {
         if (error.code === 'ENOENT') {
             // logger.error('package.json not found in the current directory.');
-            await fs.promises.writeFile(packageJsonPath, JSON.stringify({ dependencies: {} }, null, 2), 'utf8');
+            await fs.promises.writeFile(
+                packageJsonPath,
+                JSON.stringify({ dependencies: {} }, null, 2),
+                'utf8'
+            );
             return { dependencies: {} };
         } else {
             logger.error(`Error while reading package.json: ${error}`);
@@ -45,14 +49,15 @@ export const extractPackage = async (packageName, filePath) => {
     } catch (error) {
         logger.error(`Error while extracting package: ${error}`);
         process.exit(1);
-    } finally {
-        try {
-            await fs.promises.unlink(filePath);
-        } catch (err) {
-            logger.warning(`Could not delete tarball ${filePath}: ${err.message}`);
-            process.exit(1);
-        }
     }
+    // } finally {
+    //     try {
+    //         await fs.promises.unlink(filePath);
+    //     } catch (err) {
+    //         logger.warning(`Could not delete tarball ${filePath}: ${err.message}`);
+    //         process.exit(1);
+    //     }
+    // }
 };
 
 export const removePackageFromModule = async (packageName) => {
