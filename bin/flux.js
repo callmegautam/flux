@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { Command } from 'commander';
+import * as timer from '../src/utils/timer.js';
 import {
     install,
     uninstall,
@@ -18,20 +19,16 @@ import {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const packageJson = JSON.parse(
-    readFileSync(join(__dirname, '../package.json'), 'utf8')
-);
+const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'));
 
 const program = new Command();
+
+timer.start();
 
 program
     .name('flux')
     .description('A minimal package manager for JavaScript')
-    .version(
-        packageJson.version,
-        '-v, --version',
-        'output the current version'
-    );
+    .version(packageJson.version, '-v, --version', 'output the current version');
 
 program
     .command('install <package>')
@@ -51,11 +48,7 @@ program
         }
     });
 
-program
-    .command('list')
-    .aliases(['ls', 'show'])
-    .description('List installed packages')
-    .action(list);
+program.command('list').aliases(['ls', 'show']).description('List installed packages').action(list);
 
 program
     .command('update <package>')
@@ -105,3 +98,7 @@ process.on('SIGINT', () => {
 });
 
 program.parse(process.argv);
+
+process.on('exit', () => {
+    console.log(`\n Processed in ${timer.stop()}`);
+});
