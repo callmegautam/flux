@@ -2,7 +2,8 @@
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { Command } from 'commander';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import * as timer from '../src/utils/timer.js';
 import {
     install,
@@ -21,83 +22,121 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const packageJson = JSON.parse(readFileSync(join(__dirname, '../package.json'), 'utf8'));
 
-const program = new Command();
-
 timer.start();
 
-program
-    .name('flux')
-    .description('A minimal package manager for JavaScript')
-    .version(packageJson.version, '-v, --version', 'output the current version');
-
-program
-    .command('install <package>')
-    .aliases(['i', 'add'])
-    .description('Install a package from npm registry')
-    .action(install);
-
-program
-    .command('uninstall <package>')
-    .aliases(['remove', 'rm', 'delete'])
-    .description('Uninstall a package')
-    .action((packageName) => {
-        if (packageName === 'all') {
-            uninstallAll();
-        } else {
-            uninstall(packageName);
+yargs(hideBin(process.argv))
+    .scriptName('flux')
+    .version(packageJson.version)
+    .usage('$0 <command> [options]')
+    .command(
+        'install [package]',
+        'Install package(s) from npm registry',
+        (yargs) => {
+            yargs.positional('package', {
+                description:
+                    'The package to install (optional). If not provided, installs project dependencies.',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            if (argv.package) {
+                install(argv.package);
+            } else {
+                install(null);
+            }
         }
-    });
-
-program.command('list').aliases(['ls', 'show']).description('List installed packages').action(list);
-
-program
-    .command('update <package>')
-    .aliases(['up', 'upgrade'])
-    .description('Update a package')
-    .action((packageName) => {
-        if (packageName === 'all') {
-            updateAll();
-        } else {
-            update(packageName);
+    )
+    .alias('install', 'i')
+    .alias('install', 'add')
+    .command(
+        'uninstall <package>',
+        'Uninstall a package',
+        (yargs) => {
+            yargs.positional('package', {
+                description: 'The package to uninstall (or "all" to uninstall all)',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            if (argv.package === 'all') {
+                uninstallAll();
+            } else {
+                uninstall(argv.package);
+            }
         }
-    });
-
-program
-    .command('reinstall <package>')
-    .aliases(['re', 're-i'])
-    .description('Reinstall a package')
-    .action((packageName) => {
-        if (packageName === 'all') {
-            reinstallAll();
-            return;
-        } else {
-            reinstall(packageName);
+    )
+    .alias('uninstall', 'remove')
+    .alias('uninstall', 'rm')
+    .alias('uninstall', 'delete')
+    .command('list', 'List installed packages', {}, list)
+    .alias('list', 'ls')
+    .alias('list', 'show')
+    .command(
+        'update <package>',
+        'Update a package',
+        (yargs) => {
+            yargs.positional('package', {
+                description: 'The package to update (or "all" to update all)',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            if (argv.package === 'all') {
+                updateAll();
+            } else {
+                update(argv.package);
+            }
         }
-    });
-
-program
-    .command('outdated')
-    .aliases(['out', 'old', 'new'])
-    .description('List outdated packages')
-    .action(outdated);
-
-program
-    .command('search <package>')
-    .aliases(['s', 'sr'])
-    .description('Search info about package')
-    .action(search);
-
-// ? SHOW HELP
-// if (!process.argv.slice(2).length) {
-//     program.outputHelp();
-// }
+    )
+    .alias('update', 'up')
+    .alias('update', 'upgrade')
+    .command(
+        'reinstall <package>',
+        'Reinstall a package',
+        (yargs) => {
+            yargs.positional('package', {
+                description: 'The package to reinstall (or "all" to reinstall all)',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            if (argv.package === 'all') {
+                reinstallAll();
+            } else {
+                reinstall(argv.package);
+            }
+        }
+    )
+    .alias('reinstall', 're')
+    .alias('reinstall', 're-i')
+    .command('outdated', 'List outdated packages', {}, outdated)
+    .alias('outdated', 'out')
+    .alias('outdated', 'old')
+    .alias('outdated', 'new')
+    .command(
+        'search <package>',
+        'Search info about package',
+        (yargs) => {
+            yargs.positional('package', {
+                description: 'The package to search for',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            search(argv.package);
+        }
+    )
+    .alias('search', 's')
+    .alias('search', 'sr')
+    .demandCommand(1, 'You need at least one command before moving on')
+    .strict()
+    .help()
+    .alias('help', 'h').argv;
 
 process.on('SIGINT', () => {
     console.log('\nExiting Flux...');
     process.exit(0);
 });
-
-program.parse(process.argv);
 
 process.on('exit', () => {
     console.log(`\n Processed in ${timer.stop()}`);

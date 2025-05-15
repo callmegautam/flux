@@ -1,4 +1,4 @@
-$githubRepoUrl = "https://github.com/iamgautamsuthar/flux/archive/refs/heads/main.zip"
+$githubRepoUrl = "https://github.com/callmegautam/flux/archive/refs/heads/main.zip"
 $tempZip = "$env:TEMP\flux.zip"
 $extractPath = "$env:TEMP\flux"
 $fluxInstallPath = "C:\Program Files\nodejs\node_modules\flux"
