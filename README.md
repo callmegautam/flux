@@ -9,10 +9,8 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
 ## 📚 Table of Contents
 
 -   [Features](#-features)
-
     -   [Implemented](#-implemented)
     -   [Upcoming](#-upcoming)
-
 -   [Installation](#-installation)
 -   [Usage](#-usage)
 -   [Contributing](#-contributing)
@@ -24,22 +22,40 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
 
 ### ✅ **Implemented**
 
--   **Install packages**
+-   **Initialize a new project**
+
+    ```sh
+    flux init
+    ```
+
+-   **Install a package**
 
     ```sh
     flux install package-name
     ```
 
--   **Uninstall packages**
+-   **Install dependencies from package.json**
+
+    ```sh
+    flux install
+    ```
+
+-   **Uninstall a package**
 
     ```sh
     flux uninstall package-name
     ```
 
--   **Uninstall all packages**
+-   **Reinstall a package**
 
     ```sh
-    flux uninstall all
+    flux reinstall package-name
+    ```
+
+-   **Update a package**
+
+    ```sh
+    flux update package-name
     ```
 
 -   **List installed packages**
@@ -48,31 +64,7 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
     flux list
     ```
 
--   **Update a specific package**
-
-    ```sh
-    flux update package-name
-    ```
-
--   **Update all packages**
-
-    ```sh
-    flux update all
-    ```
-
--   **Reinstall a specific package**
-
-    ```sh
-    flux reinstall package-name
-    ```
-
--   **Reinstall all packages**
-
-    ```sh
-    flux reinstall all
-    ```
-
--   **Check for available updates**
+-   **Check for outdated packages**
 
     ```sh
     flux outdated
@@ -84,13 +76,26 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
     flux search package-name
     ```
 
+-   **Run scripts defined in package.json**
+
+    ```sh
+    flux run script-name
+    ```
+
 ### 🔥 **Upcoming**
 
--   **Global package management** (`flux global install package-name`)
--   **Dependency tree viewer** (`flux tree`)
--   **Lockfile support** for deterministic installs
--   **Command aliases** for faster workflows
--   **Custom registry support** to use alternatives like Verdaccio or pnpm registry
+-   Dependency tree viewer (`flux tree`)
+-   Lockfile support for deterministic installs
+-   Custom registry support (e.g., Verdaccio, pnpm registry)
+-   Enhanced caching for faster installs
+-   Parallel installation of packages
+-   Improved error handling and diagnostics
+-   Support for workspace and monorepo management
+-   Interactive CLI prompts for easier usage
+-   Integration with popular CI/CD pipelines
+-   Automatic semantic versioning and changelog generation
+-   Offline mode for working without internet connection
+-   Package audit and vulnerability scanning
 
 ---
 
@@ -122,10 +127,12 @@ To update Flux, simply re-run the latest installer — it will handle the update
 Here’s a quick example to get you started:
 
 ```sh
+flux init
 flux install express
 flux list
 flux update express
 flux uninstall express
+flux run build
 ```
 
 For detailed documentation, visit the [Wiki](https://github.com/callmegautam/flux/wiki) _(coming soon)_.
