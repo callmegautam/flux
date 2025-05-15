@@ -16,6 +16,7 @@ import {
     uninstallAll,
     outdated,
     search,
+    init,
 } from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -28,6 +29,17 @@ yargs(hideBin(process.argv))
     .scriptName('flux')
     .version(packageJson.version)
     .usage('$0 <command> [options]')
+    .command(
+        'init',
+        'Create a new package.json file',
+        (yargs) => {
+            // * Positional arguments or options needed for a basic init
+        },
+        (argv) => {
+            init();
+        }
+    )
+    .alias('init', 'create') // Example alias for init
     .command(
         'install [package]',
         'Install package(s) from npm registry',
@@ -42,7 +54,9 @@ yargs(hideBin(process.argv))
             if (argv.package) {
                 install(argv.package);
             } else {
-                install(null);
+                // If no package name is provided, assume the user wants to install project dependencies
+                console.log('No package name provided. Installing project dependencies...');
+                install(null); // Assuming your install(null) handles project dependencies
             }
         }
     )

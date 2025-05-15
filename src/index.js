@@ -8,5 +8,18 @@ import { reinstallAll } from './cli/reinstallAll.js';
 import { uninstallAll } from './cli/uninstallAll.js';
 import { outdated } from './cli/outdated.js';
 import { search } from './cli/search.js';
+import { init } from './cli/init.js';
 
-export { install, uninstall, uninstallAll, list, update, updateAll, reinstall, reinstallAll, outdated, search };
+export {
+    install,
+    uninstall,
+    uninstallAll,
+    list,
+    update,
+    updateAll,
+    reinstall,
+    reinstallAll,
+    outdated,
+    search,
+    init,
+};
