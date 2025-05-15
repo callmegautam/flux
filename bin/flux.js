@@ -55,9 +55,7 @@ yargs(hideBin(process.argv))
             if (argv.package) {
                 install(argv.package);
             } else {
-                // If no package name is provided, assume the user wants to install project dependencies
-                console.log('No package name provided. Installing project dependencies...');
-                install(null); // Assuming your install(null) handles project dependencies
+                install(null);
             }
         }
     )

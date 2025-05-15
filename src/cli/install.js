@@ -11,6 +11,10 @@ export const install = async (packageName, customVersion = null) => {
 
             if (packageJson.dependencies && Object.keys(packageJson.dependencies).length > 0) {
                 for (const [packageName, version] of Object.entries(packageJson.dependencies)) {
+                    if (version.startsWith('^')) {
+                        await install(packageName);
+                        return;
+                    }
                     await install(packageName, version);
                 }
             } else {
