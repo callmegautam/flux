@@ -8,7 +8,7 @@
         "flux": "./bin/flux.js"
     },
     "scripts": {
-        "build": "pkg ./src/index.js --targets node16-win-x64 --output flux.exe"
+        "build": "ps2exe -inputFile install_flux.ps1 -outputFile install_flux.exe -title \"Flux\" -description \"custom package manager\" -requireAdmin -product \"Flux Installer\" -company \"Gautam Inc.\" -version \"1.0.0\""
     },
     "keywords": [
         "package manager",
