@@ -17,6 +17,7 @@ import {
     outdated,
     search,
     init,
+    run,
 } from '../src/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -142,6 +143,20 @@ yargs(hideBin(process.argv))
     )
     .alias('search', 's')
     .alias('search', 'sr')
+    .command(
+        'run <script>',
+        'Run a script in the current project',
+        (yargs) => {
+            yargs.positional('script', {
+                description: 'The script to run',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            run(argv.script);
+        }
+    )
+    .alias('run', 'r')
     .demandCommand(1, 'You need at least one command before moving on')
     .strict()
     .help()

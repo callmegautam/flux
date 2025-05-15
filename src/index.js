@@ -9,10 +9,12 @@ import { uninstallAll } from './cli/uninstallAll.js';
 import { outdated } from './cli/outdated.js';
 import { search } from './cli/search.js';
 import { init } from './cli/init.js';
+import { run } from './cli/run.js';
 
 export {
     install,
     uninstall,
+    run,
     uninstallAll,
     list,
     update,
