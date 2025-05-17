@@ -6,13 +6,7 @@ import logger from '../utils/logger.js';
 import { config } from '../config.js';
 import axios from 'axios';
 //
-import { promisify } from 'util';
-import { pipeline } from 'stream';
-import fs from 'fs';
 import path from 'path';
-import axios from 'axios';
-import { config } from '../config.js';
-import logger from './logger.js';
 
 export const install = async (packageName, customVersion = null) => {
     try {
