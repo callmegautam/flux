@@ -11,6 +11,7 @@ import { search } from './cli/search.js';
 import { init } from './cli/init.js';
 import { run } from './cli/run.js';
 import { info } from './cli/info.js';
+import { clearCache } from './cli/clear-cache.js';
 
 export {
     install,
@@ -26,4 +27,5 @@ export {
     search,
     init,
     info,
+    clearCache,
 };

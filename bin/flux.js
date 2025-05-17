@@ -171,6 +171,8 @@ yargs(hideBin(process.argv))
         }
     )
     .alias('info', 'i')
+    .command('clear', 'Clear cache or temp installs', {}, clearCache)
+    .alias('clear', 'c')
     .demandCommand(1, 'You need at least one command before moving on')
     .strict()
     .help()
