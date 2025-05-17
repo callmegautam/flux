@@ -167,6 +167,5 @@ process.on('SIGINT', () => {
 });
 
 process.on('exit', () => {
-    // console.log(`\n Processed in ${timer.stop()}`);
-    logger.info(`\n Processed in ${timer.stop()}`);
+    console.log(`\n Processed in ${timer.stop()}`);
 });
