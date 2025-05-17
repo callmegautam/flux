@@ -9,18 +9,16 @@ export const outdated = async () => {
         let isAnyUpdate = false;
         const packageJson = await readPackageJson();
 
-        Object.keys(packageJson.dependencies).forEach(async (packageName) => {
+        for (const packageName of Object.keys(packageJson.dependencies)) {
             const packageInfo = await fetchPackageInformation(packageName);
             const latestVersion = packageInfo['dist-tags'].latest;
             const currentVersion = packageJson.dependencies[packageName];
 
-            if (currentVersion != latestVersion) {
-                logger.info(
-                    `${packageName}@${packageJson.dependencies[packageName]} -> ${packageName}@${latestVersion}`
-                );
+            if (currentVersion !== latestVersion) {
+                logger.info(`${packageName}@${currentVersion} -> ${packageName}@${latestVersion}`);
                 isAnyUpdate = true;
             }
-        });
+        }
 
         if (!isAnyUpdate) {
             logger.info('All packages are up to date.');

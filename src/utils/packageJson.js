@@ -5,7 +5,7 @@ export const addPackageToJson = async (packageName, version) => {
     try {
         const packageJson = await readPackageJson();
         packageJson.dependencies[packageName] = version;
-        writePackageJson(packageJson);
+        await writePackageJson(packageJson);
     } catch (error) {
         logger.error(`Error while adding package to package.json: ${error}`);
     }

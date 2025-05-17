@@ -17,7 +17,7 @@ export const update = async (packageName) => {
             return;
         }
         logger.info(`Updating '${packageName}' from v${currentVersion} ➝ v${latestVersion} ...`);
-        await uninstall(packageName);
+        // await uninstall(packageName);
         await install(packageName);
         logger.success(`Package ${packageName}@${latestVersion} updated successfully.`);
     } catch (error) {
