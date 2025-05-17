@@ -18,6 +18,7 @@ import {
     search,
     init,
     run,
+    info,
 } from '../src/index.js';
 import logger from '../src/utils/logger.js';
 
@@ -156,6 +157,20 @@ yargs(hideBin(process.argv))
         }
     )
     .alias('run', 'r')
+    .command(
+        'info <package>',
+        'Show info about a package',
+        (yargs) => {
+            yargs.positional('package', {
+                description: 'The package to show info about',
+                type: 'string',
+            });
+        },
+        (argv) => {
+            info(argv.package);
+        }
+    )
+    .alias('info', 'i')
     .demandCommand(1, 'You need at least one command before moving on')
     .strict()
     .help()
