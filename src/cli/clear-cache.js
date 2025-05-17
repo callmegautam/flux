@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import logger from '../utils/logger';
+import logger from '../utils/logger.js';
 
 const currentDir = process.cwd();
 const dirve = currentDir.slice(0, 2);
