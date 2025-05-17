@@ -19,6 +19,7 @@ import {
     init,
     run,
 } from '../src/index.js';
+import logger from '../src/utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -161,7 +162,7 @@ yargs(hideBin(process.argv))
     .alias('help', 'h').argv;
 
 process.on('SIGINT', () => {
-    console.log('\nExiting Flux...');
+    logger.info('Exiting gracefully...');
     process.exit(0);
 });
 

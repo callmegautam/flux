@@ -48,7 +48,7 @@ export const extractPackage = async (packageName, filePath) => {
         await fs.promises.mkdir(nodeModulesPath, { recursive: true });
         await fs.promises.mkdir(extractionPath, { recursive: true });
 
-        tar.x({ file: filePath, C: extractionPath, strip: 1 });
+        await tar.x({ file: filePath, C: extractionPath, strip: 1 });
     } catch (error) {
         logger.error(`Error while extracting package: ${error}`);
         process.exit(1);

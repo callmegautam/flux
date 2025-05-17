@@ -13,9 +13,9 @@ export const install = async (packageName, customVersion = null) => {
                 for (const [packageName, version] of Object.entries(packageJson.dependencies)) {
                     if (version.startsWith('^')) {
                         await install(packageName);
-                        return;
+                    } else {
+                        await install(packageName, version);
                     }
-                    await install(packageName, version);
                 }
             } else {
                 logger.info('No dependencies found in package.json. Nothing to install.');
