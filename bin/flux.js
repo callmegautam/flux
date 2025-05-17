@@ -17,6 +17,7 @@ import {
     outdated,
     search,
     init,
+    clearCache,
     run,
     info,
 } from '../src/index.js';

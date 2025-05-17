@@ -9,6 +9,7 @@ const storePath = path.join(dirve, '.flux-store');
 export const clearCache = async () => {
     try {
         await fs.promises.rm(storePath, { recursive: true, force: true });
+        logger.success('Cache cleared successfully.');
     } catch (error) {
         logger.error(`Error while clearing cache: ${error}`);
         process.exit(1);
