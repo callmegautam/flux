@@ -1,4 +1,4 @@
-import { fetchPackageInformation } from '../utils/fetchPackageInformation';
+import { fetchPackageInformation } from '../utils/fetchPackageInformation.js';
 
 export const info = async (packageName) => {
     const packageInfo = await fetchPackageInformation(packageName);
