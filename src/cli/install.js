@@ -3,10 +3,11 @@ import { downloadPackage } from '../utils/downloadPackage.js';
 import { extractPackage, readPackageJson } from '../utils/fileSystem.js';
 import { fetchPackageInformation } from '../utils/fetchPackageInformation.js';
 import logger from '../utils/logger.js';
+//
 import { config } from '../config.js';
 import axios from 'axios';
-//
 import path from 'path';
+import * as tar from 'tar';
 
 export const install = async (packageName, customVersion = null) => {
     try {
