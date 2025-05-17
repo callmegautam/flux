@@ -27,4 +27,5 @@ export const init = async () => {
     await writePackageJson(merged);
 
     logger.success('Project initialized successfully.');
+    console.log(merged);
 };
