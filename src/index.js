@@ -1,17 +1,16 @@
-import { install } from './cli/install.js';
-import { uninstall } from './cli/uninstall.js';
-import { list } from './cli/list.js';
-import { update } from './cli/update.js';
-import { updateAll } from './cli/updateAll.js';
-import { reinstall } from './cli/reinstall.js';
-import { reinstallAll } from './cli/reinstallAll.js';
-import { uninstallAll } from './cli/uninstallAll.js';
-import { outdated } from './cli/outdated.js';
-import { search } from './cli/search.js';
-import { init } from './cli/init.js';
-import { run } from './cli/run.js';
-import { info } from './cli/info.js';
-import { clearCache } from './cli/clear-cache.js';
+import { install } from './services/install.js';
+import { uninstall } from './services/uninstall.js';
+import { list } from './services/list.js';
+import { update } from './services/update.js';
+import { updateAll } from './services/updateAll.js';
+import { reinstall } from './services/reinstall.js';
+import { reinstallAll } from './services/reinstallAll.js';
+import { uninstallAll } from './services/uninstallAll.js';
+import { outdated } from './services/outdated.js';
+import { init } from './services/init.js';
+import { run } from './services/run.js';
+import { info } from './services/info.js';
+import { clearCache } from './services/clear-cache.js';
 
 export {
     install,
@@ -24,7 +23,6 @@ export {
     reinstall,
     reinstallAll,
     outdated,
-    search,
     init,
     info,
     clearCache,
