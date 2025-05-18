@@ -1,5 +1,5 @@
 import { addPackageToJson } from '../utils/packageJson.js';
-import { downloadPackage } from '../utils/downloadPackage.js';
+import { downloadPackage } from '../utils/download-package.js';
 import { extractPackage, readPackageJson } from '../utils/fileSystem.js';
 import { fetchPackageInformation } from '../utils/fetchPackageInformation.js';
 import logger from '../utils/logger.js';

@@ -1,14 +1,10 @@
-import path from 'path';
 import fs from 'fs';
 import logger from '../utils/logger.js';
-
-const currentDir = process.cwd();
-const dirve = currentDir.slice(0, 2);
-const storePath = path.join(dirve, '.flux-store');
+import { config } from '../config.js';
 
 export const clearCache = async () => {
     try {
-        await fs.promises.rm(storePath, { recursive: true, force: true });
+        await fs.promises.rm(config.cachePath, { recursive: true, force: true });
         logger.success('Cache cleared successfully.');
     } catch (error) {
         logger.error(`Error while clearing cache: ${error}`);
