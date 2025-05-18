@@ -1,4 +1,4 @@
-import { clearCache } from './services/clear-cache.js';
+import { clearCache } from './services/clear.js';
 import { info } from './services/info.js';
 import { init } from './services/init.js';
 import { install } from './services/install.js';
