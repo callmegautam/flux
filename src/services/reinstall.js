@@ -1,4 +1,4 @@
-import { removePackageFromModule } from '../utils/fileSystem.js';
+import { readPackageJson, removePackageFromModule } from '../utils/fileSystem.js';
 import { checkIfPackageExists } from '../utils/packageJson.js';
 import { install } from './install.js';
 import logger from '../utils/logger.js';
@@ -11,6 +11,7 @@ export const reinstall = async (packageName) => {
             for (const dependency in dependencies) {
                 await reinstall(dependency);
             }
+            logger.info('All packages reinstalled successfully.');
             process.exit(1);
         }
         await checkIfPackageExists(packageName);
