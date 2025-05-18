@@ -4,7 +4,6 @@ import { list } from './services/list.js';
 import { update } from './services/update.js';
 import { updateAll } from './services/updateAll.js';
 import { reinstall } from './services/reinstall.js';
-import { reinstallAll } from './services/reinstallAll.js';
 import { uninstallAll } from './services/uninstallAll.js';
 import { outdated } from './services/outdated.js';
 import { init } from './services/init.js';
@@ -21,7 +20,6 @@ export {
     update,
     updateAll,
     reinstall,
-    reinstallAll,
     outdated,
     init,
     info,

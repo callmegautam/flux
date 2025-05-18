@@ -14,7 +14,10 @@ export const addPackageToJson = async (packageName, version) => {
 export const checkIfAnyPackagesExist = async () => {
     try {
         const packageJson = await readPackageJson();
-        if (!packageJson.dependencies || Object.keys(packageJson.dependencies).length === 0) {
+        if (
+            !packageJson.dependencies ||
+            Object.keys(packageJson.dependencies).length === 0
+        ) {
             logger.info('No dependencies found.');
             process.exit(1);
         }
@@ -23,11 +26,22 @@ export const checkIfAnyPackagesExist = async () => {
     }
 };
 
-export const checkIfPackageExists = async (packageName) => {
+export const checkIfPackageExists = async (packageName = null) => {
     try {
         const packageJson = await readPackageJson();
+
+        if (packageName === null) {
+            if (
+                !packageJson.dependencies ||
+                Object.keys(packageJson.dependencies).length === 0
+            ) {
+                logger.info('No dependencies found.');
+                process.exit(1);
+            }
+            return;
+        }
+
         if (!packageJson.dependencies || !packageJson.dependencies[packageName]) {
-            // console.log(packageJson);
             logger.error(`Package ${packageName} is not found.`);
             process.exit(1);
         }
