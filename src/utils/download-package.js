@@ -1,15 +1,17 @@
-import { promisify } from 'util';
-import { pipeline } from 'stream';
-import fs from 'fs';
-import path from 'path';
-import axios from 'axios';
-import { config } from '../config.js';
-import logger from './logger.js';
+import { promisify } from "util";
+import { pipeline } from "stream";
+import fs from "fs";
+import path from "path";
+import axios from "axios";
+import { config } from "../config.js";
+import logger from "./logger.js";
 
 const pipelineAsync = promisify(pipeline);
 
 export const downloadPackage = async (packageName, version) => {
     try {
+        let fileUrl = null;
+
         if (!fs.existsSync(config.cachePath)) {
             fs.mkdirSync(config.cachePath);
         }
@@ -17,19 +19,23 @@ export const downloadPackage = async (packageName, version) => {
         if (fs.existsSync(path.join(config.cachePath, `${packageName}-${version}.tgz`))) {
             return path.join(config.cachePath, `${packageName}-${version}.tgz`);
         }
+        try {
+            const res = await axios.post(`${config.backendAPI}/package`, { packageName, version });
+            fileUrl = res.data.data;
 
-        const res = await axios.post(`${config.backendAPI}/package`, { packageName, version })
-
-        if (res.status !== 200) {
-            logger.error(res.data.message ?? `Failed to fetch package information for ${packageName}`);
-            process.exit(1);
+            if (res.status !== 200) {
+                logger.error(res.data.message ?? `Failed to fetch package information for ${packageName}`);
+                process.exit(1);
+            }
+        } catch (error) {
+            fileUrl = `${config.registry}${packageName}/-/${packageName}-${version}.tgz`;
         }
 
         // const tarballUrl = `${config.registry}${packageName}/-/${packageName}-${version}.tgz`;
         const filePath = path.join(config.cachePath, `${packageName}-${version}.tgz`);
         const response = await axios({
-            url: res.data.data,
-            responseType: 'stream',
+            url: fileUrl,
+            responseType: "stream",
         });
         const writer = fs.createWriteStream(filePath);
         await pipelineAsync(response.data, writer);
@@ -37,10 +43,8 @@ export const downloadPackage = async (packageName, version) => {
         return filePath;
     } catch (error) {
         if (error.response) {
-            logger.error(
-                `Failed to download ${packageName}. HTTP Status: ${error.response.status}`
-            );
-        } else if (error.code === 'ECONNABORTED') {
+            logger.error(`Failed to download ${packageName}. HTTP Status: ${error.response.status}`);
+        } else if (error.code === "ECONNABORTED") {
             logger.error(`Download timed out for ${packageName}`);
         } else {
             logger.error(`Error downloading package ${packageName}: ${error.message}`);
