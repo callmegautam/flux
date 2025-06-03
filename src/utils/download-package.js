@@ -18,10 +18,17 @@ export const downloadPackage = async (packageName, version) => {
             return path.join(config.cachePath, `${packageName}-${version}.tgz`);
         }
 
-        const tarballUrl = `${config.registry}${packageName}/-/${packageName}-${version}.tgz`;
+        const res = await axios.post(`${config.backendAPI}/package`, { packageName, version })
+
+        if (res.status !== 200) {
+            logger.error(res.data.message ?? `Failed to fetch package information for ${packageName}`);
+            process.exit(1);
+        }
+
+        // const tarballUrl = `${config.registry}${packageName}/-/${packageName}-${version}.tgz`;
         const filePath = path.join(config.cachePath, `${packageName}-${version}.tgz`);
         const response = await axios({
-            url: tarballUrl,
+            url: res.data.data,
             responseType: 'stream',
         });
         const writer = fs.createWriteStream(filePath);
