@@ -8,7 +8,6 @@ import outdated from "./outdated.js";
 import run from "./run.js";
 import info from "./info.js";
 import clear from "./clear.js";
-import ping from "./ping.js";
 
 export default function registerCommands(yargs) {
     [init, install, uninstall, list, update, reinstall, outdated, run, info, clear].forEach((command) =>

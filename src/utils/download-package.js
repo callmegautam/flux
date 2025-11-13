@@ -11,8 +11,6 @@ const pipelineAsync = promisify(pipeline);
 export const downloadPackage = async (packageName, version, isFlux = false) => {
     const API = isFlux ? config.backendAPI : config.registry;
 
-    console.log("API IS USED : ", API);
-
     try {
         let fileUrl = null;
 
