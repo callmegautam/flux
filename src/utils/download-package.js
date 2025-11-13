@@ -8,7 +8,11 @@ import logger from "./logger.js";
 
 const pipelineAsync = promisify(pipeline);
 
-export const downloadPackage = async (packageName, version) => {
+export const downloadPackage = async (packageName, version, isFlux = false) => {
+    const API = isFlux ? config.backendAPI : config.registry;
+
+    console.log("API IS USED : ", API);
+
     try {
         let fileUrl = null;
 
@@ -20,7 +24,7 @@ export const downloadPackage = async (packageName, version) => {
             return path.join(config.cachePath, `${packageName}-${version}.tgz`);
         }
         try {
-            const res = await axios.post(`${config.backendAPI}/package`, { packageName, version });
+            const res = await axios.post(`${API}/package`, { packageName, version });
             fileUrl = res.data.data;
 
             if (res.status !== 200) {
