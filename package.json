@@ -6,7 +6,7 @@
     "type": "module",
     "packageManager": "pnpm@11.15.0",
     "bin": {
-        "flux": "./dist/bin/flux.js"
+        "flux": "dist/bin/flux.js"
     },
     "scripts": {
         "sync-version": "node scripts/sync-version.mjs",
