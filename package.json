@@ -4,6 +4,7 @@
     "description": "Flux is a simple, lightweight package manager for managing dependencies in your project, allowing easy installation of npm packages.",
     "main": "./dist/src/index.js",
     "type": "module",
+    "packageManager": "pnpm@11.15.0",
     "bin": {
         "flux": "./dist/bin/flux.js"
     },
