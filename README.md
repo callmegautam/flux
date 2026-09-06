@@ -70,10 +70,10 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
     flux outdated
     ```
 
--   **Search the package registry**
+-   **Show information about a package**
 
     ```sh
-    flux search package-name
+    flux info package-name
     ```
 
 -   **Run scripts defined in package.json**
@@ -82,8 +82,15 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
     flux run script-name
     ```
 
+-   **Clear the download cache**
+
+    ```sh
+    flux clear
+    ```
+
 ### 🔥 **Upcoming**
 
+-   Package registry search (`flux search`)
 -   Dependency tree viewer (`flux tree`)
 -   Lockfile support for deterministic installs
 -   Custom registry support (e.g., Verdaccio, pnpm registry)
