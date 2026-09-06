@@ -101,24 +101,57 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
 
 ## 🚀 Installation
 
-The current **alpha release** is available as a Windows installer.
+### npm (recommended)
 
--   **Executable location in repo:**
-    `flux/install/install_flux.exe`
+Requires Node.js 18+.
 
--   **Direct download:**
-    [Flux Installer v0.1.0-alpha](https://github.com/callmegautam/flux/releases/download/v0.1.0-alpha/install_flux.exe)
+```sh
+npm install -g fluxpm
+```
 
-### Setup instructions
+Or try it without installing:
 
-1. Download the `.exe` installer.
-2. **Run as Administrator.**
-   If prompted by Windows Defender, click **“Run anyway.”**
-   _(Note: The warning appears because we don’t yet have a signed publisher certificate. You can review the `install_flux.ps1` script to verify its safety.)_
+```sh
+npx fluxpm --help
+```
 
-### Updating Flux
+### Standalone binary
 
-To update Flux, simply re-run the latest installer — it will handle the update automatically.
+No Node.js required — the binary is fully self-contained.
+
+**Linux / macOS**
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/callmegautam/flux/main/install.sh | sh
+```
+
+**Windows** (PowerShell, no administrator rights needed)
+
+```powershell
+irm https://raw.githubusercontent.com/callmegautam/flux/main/install.ps1 | iex
+```
+
+Binaries for `linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`, and `windows-x64`
+are attached to every [release](https://github.com/callmegautam/flux/releases),
+alongside a `SHA256SUMS` file that both install scripts verify automatically.
+
+Both scripts install per-user and honour two environment variables:
+
+| Variable | Default |
+| --- | --- |
+| `FLUX_VERSION` | latest release |
+| `FLUX_INSTALL_DIR` | `~/.local/bin` (Unix), `%LOCALAPPDATA%\flux\bin` (Windows) |
+
+### Updating
+
+Re-run the same command you installed with (`npm install -g fluxpm`, or the install script).
+
+### Uninstalling
+
+```sh
+npm uninstall -g fluxpm        # npm install
+rm ~/.local/bin/flux           # standalone binary (Unix)
+```
 
 ---
 

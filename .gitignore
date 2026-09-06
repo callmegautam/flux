@@ -139,3 +139,4 @@ dist
 
 # SvelteKit build / generate output
 .svelte-kit
+dist-bin/

@@ -1,0 +1,63 @@
+name: Release
+
+on:
+    push:
+        tags: ['v*']
+
+jobs:
+    binaries:
+        name: Build standalone binaries
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+            - uses: oven-sh/setup-bun@v2
+              with:
+                  bun-version: latest
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+
+            - name: Build binaries
+              run: node scripts/build-binaries.mjs
+
+            - name: Generate checksums
+              run: cd dist-bin && sha256sum * > SHA256SUMS && cat SHA256SUMS
+
+            - name: Publish GitHub release
+              uses: softprops/action-gh-release@v2
+              with:
+                  files: dist-bin/*
+                  generate_release_notes: true
+
+    npm:
+        name: Publish to npm
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            id-token: write
+        steps:
+            - uses: actions/checkout@v4
+            - uses: pnpm/action-setup@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: 22
+                  cache: pnpm
+                  registry-url: https://registry.npmjs.org
+
+            - run: pnpm install --frozen-lockfile
+            - run: pnpm run typecheck
+
+            - name: Verify tag matches package.json version
+              run: |
+                  TAG="${GITHUB_REF_NAME#v}"
+                  PKG=$(node -p "require('./package.json').version")
+                  if [ "$TAG" != "$PKG" ]; then
+                    echo "Tag $GITHUB_REF_NAME does not match package.json version $PKG" >&2
+                    exit 1
+                  fi
+
+            - run: npm publish --provenance --access public
+              env:
+                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

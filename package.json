@@ -1,14 +1,21 @@
 {
-    "name": "flux",
-    "version": "0.1.0",
+    "name": "fluxpm",
+    "version": "0.2.0",
     "description": "Flux is a simple, lightweight package manager for managing dependencies in your project, allowing easy installation of npm packages.",
-    "main": "./bin/flux.js",
+    "main": "./dist/src/index.js",
     "type": "module",
     "bin": {
-        "flux": "./bin/flux.js"
+        "flux": "./dist/bin/flux.js"
     },
     "scripts": {
-        "build": "ps2exe -inputFile install_flux.ps1 -outputFile install_flux.exe -title \"Flux\" -description \"custom package manager\" -requireAdmin -product \"Flux Installer\" -company \"Gautam Inc.\" -version \"1.0.0\""
+        "sync-version": "node scripts/sync-version.mjs",
+        "prebuild": "node scripts/sync-version.mjs",
+        "build": "tsc",
+        "typecheck": "tsc --noEmit",
+        "dev": "tsx bin/flux.ts",
+        "build:binaries": "node scripts/build-binaries.mjs",
+        "prepare": "node scripts/sync-version.mjs && tsc",
+        "prepublishOnly": "node scripts/sync-version.mjs && tsc"
     },
     "keywords": [
         "package manager",
@@ -18,13 +25,30 @@
     ],
     "author": "Gautam Suthar <iamgautamsuthar@outlook.com> (https://github.com/callmegautam)",
     "license": "MIT",
-    "jest": {
-        "transform": {}
-    },
     "dependencies": {
         "axios": "^1.7.9",
         "chalk": "^5.4.1",
         "tar": "^7.4.3",
         "yargs": "^17.7.2"
+    },
+    "devDependencies": {
+        "@types/node": "^26.4.1",
+        "@types/yargs": "^17.0.35",
+        "tsx": "^4.23.13",
+        "typescript": "^7.0.2"
+    },
+    "files": [
+        "dist"
+    ],
+    "engines": {
+        "node": ">=18"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/callmegautam/flux.git"
+    },
+    "homepage": "https://github.com/callmegautam/flux#readme",
+    "bugs": {
+        "url": "https://github.com/callmegautam/flux/issues"
     }
 }
