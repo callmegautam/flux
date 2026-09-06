@@ -1,122 +1,29 @@
-# **Flux — A Minimal, Modern Package Manager**
+# Flux
 
-Flux is a lightweight, minimalistic package manager designed to streamline dependency management in JavaScript projects. It offers fast, reliable tools for installing, updating, removing, and managing packages — with more powerful features on the roadmap.
+A minimal package manager for JavaScript projects. Flux installs, updates, and removes npm packages from the command line.
 
-⚠️ **Alpha Release:** Flux is currently in active development and **not yet recommended for production use**. We welcome developers and contributors to help shape its future!
+Flux is alpha software and is not ready for production use. It installs direct dependencies only; see [Limitations](#limitations).
 
----
+## Contents
 
-## 📚 Table of Contents
+- [Installation](#installation)
+- [Commands](#commands)
+- [Configuration](#configuration)
+- [Limitations](#limitations)
+- [Contributing](#contributing)
+- [License](#license)
 
--   [Features](#-features)
-    -   [Implemented](#-implemented)
-    -   [Upcoming](#-upcoming)
--   [Installation](#-installation)
--   [Usage](#-usage)
--   [Contributing](#-contributing)
--   [License](#-license)
+## Installation
 
----
+### npm
 
-## ✨ Features
-
-### ✅ **Implemented**
-
--   **Initialize a new project**
-
-    ```sh
-    flux init
-    ```
-
--   **Install a package**
-
-    ```sh
-    flux install package-name
-    ```
-
--   **Install dependencies from package.json**
-
-    ```sh
-    flux install
-    ```
-
--   **Uninstall a package**
-
-    ```sh
-    flux uninstall package-name
-    ```
-
--   **Reinstall a package**
-
-    ```sh
-    flux reinstall package-name
-    ```
-
--   **Update a package**
-
-    ```sh
-    flux update package-name
-    ```
-
--   **List installed packages**
-
-    ```sh
-    flux list
-    ```
-
--   **Check for outdated packages**
-
-    ```sh
-    flux outdated
-    ```
-
--   **Show information about a package**
-
-    ```sh
-    flux info package-name
-    ```
-
--   **Run scripts defined in package.json**
-
-    ```sh
-    flux run script-name
-    ```
-
--   **Clear the download cache**
-
-    ```sh
-    flux clear
-    ```
-
-### 🔥 **Upcoming**
-
--   Package registry search (`flux search`)
--   Dependency tree viewer (`flux tree`)
--   Lockfile support for deterministic installs
--   Custom registry support (e.g., Verdaccio, pnpm registry)
--   Enhanced caching for faster installs
--   Parallel installation of packages
--   Improved error handling and diagnostics
--   Support for workspace and monorepo management
--   Interactive CLI prompts for easier usage
--   Integration with popular CI/CD pipelines
--   Automatic semantic versioning and changelog generation
--   Offline mode for working without internet connection
--   Package audit and vulnerability scanning
-
----
-
-## 🚀 Installation
-
-### npm (recommended)
-
-Requires Node.js 18+.
+Requires Node.js 18 or later.
 
 ```sh
 npm install -g @iamgautamsuthar/flux
 ```
 
-Or try it without installing:
+To run it without installing:
 
 ```sh
 npx @iamgautamsuthar/flux --help
@@ -124,47 +31,64 @@ npx @iamgautamsuthar/flux --help
 
 ### Standalone binary
 
-No Node.js required — the binary is fully self-contained.
+The binary is self-contained and does not require Node.js.
 
-**Linux / macOS**
+Linux and macOS:
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/callmegautam/flux/main/install.sh | sh
 ```
 
-**Windows** (PowerShell, no administrator rights needed)
+Windows, in PowerShell. This installs per-user and does not need administrator rights:
 
 ```powershell
 irm https://raw.githubusercontent.com/callmegautam/flux/main/install.ps1 | iex
 ```
 
-Binaries for `linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`, and `windows-x64`
-are attached to every [release](https://github.com/callmegautam/flux/releases),
-alongside a `SHA256SUMS` file that both install scripts verify automatically.
+Binaries for `linux-x64`, `linux-arm64`, `darwin-x64`, `darwin-arm64`, and `windows-x64` are attached to every [release](https://github.com/callmegautam/flux/releases), along with a `SHA256SUMS` file that both install scripts verify automatically.
 
-Both scripts install per-user and honour two environment variables:
+Both scripts read two optional environment variables:
 
 | Variable | Default |
 | --- | --- |
 | `FLUX_VERSION` | latest release |
-| `FLUX_INSTALL_DIR` | `~/.local/bin` (Unix), `%LOCALAPPDATA%\flux\bin` (Windows) |
+| `FLUX_INSTALL_DIR` | `~/.local/bin` on Unix, `%LOCALAPPDATA%\flux\bin` on Windows |
 
 ### Updating
 
-Re-run the same command you installed with (`npm install -g @iamgautamsuthar/flux`, or the install script).
+Re-run whichever command you installed with.
 
 ### Uninstalling
 
 ```sh
-npm uninstall -g @iamgautamsuthar/flux        # npm install
-rm ~/.local/bin/flux           # standalone binary (Unix)
+npm uninstall -g @iamgautamsuthar/flux
 ```
 
----
+For the standalone binary on Unix, delete it:
 
-## ⚙️ Usage
+```sh
+rm ~/.local/bin/flux
+```
 
-Here’s a quick example to get you started:
+## Commands
+
+```sh
+flux init                     Create a package.json
+flux install                  Install every dependency in package.json
+flux install <package>        Install one package and record it
+flux uninstall [package]      Remove one package, or all of them
+flux reinstall [package]      Reinstall one package, or all of them
+flux update [package]         Update one package, or all of them
+flux list                     List installed dependencies
+flux outdated                 Show packages with a newer version available
+flux info <package>           Show registry information for a package
+flux run <script>             Run a script from package.json
+flux clear                    Delete the download cache
+```
+
+Most commands have aliases, such as `add` for `install` and `ls` for `list`. Run `flux --help` for the full list.
+
+A typical session:
 
 ```sh
 flux init
@@ -172,52 +96,45 @@ flux install express
 flux list
 flux update express
 flux uninstall express
-flux run build
 ```
 
-For detailed documentation, visit the [Wiki](https://github.com/callmegautam/flux/wiki) _(coming soon)_.
+Pass `--flux` to `install` to resolve tarballs through the Flux registry instead of npm.
 
----
+## Configuration
 
-## 💡 Contributing
+Downloaded tarballs are cached per user:
 
-We welcome contributors of all levels! Here’s how to get involved:
+| Platform | Location |
+| --- | --- |
+| Linux | `$XDG_CACHE_HOME/flux`, or `~/.cache/flux` |
+| macOS | `~/Library/Caches/flux` |
+| Windows | `%LOCALAPPDATA%\flux\Cache` |
 
-1. Fork this repository.
+Set `FLUX_CACHE_DIR` to override this. Run `flux clear` to empty the cache.
 
-2. Create a feature branch:
+## Limitations
 
-    ```sh
-    git checkout -b feature/your-feature-name
-    ```
+Flux is an alpha release, and these gaps are worth knowing before you rely on it:
 
-3. Commit your changes and push:
+- Only direct dependencies are installed. Flux does not walk the dependency tree, so most real packages will not work end to end.
+- There is no lockfile, so installs are not reproducible.
+- Version ranges are not resolved. A `^1.2.3` range installs the latest published version rather than the newest match within the range.
+- There is no test suite.
 
-    ```sh
-    git push origin feature/your-feature-name
-    ```
+Planned work includes dependency resolution, a lockfile, registry search, a dependency tree viewer, parallel installs, workspace support, and vulnerability scanning.
 
-4. Open a **pull request** with a clear description.
+## Contributing
 
-👉 Check the [issues](https://github.com/callmegautam/flux/issues) tab for open tasks, feature requests, or bugs.
+Contributions are welcome. See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for how to set up the project, run it locally, and publish a release.
 
----
+The short version:
 
-## 🌟 Get Involved
+1. Fork the repository and branch off `dev`.
+2. Make your change, then run `pnpm typecheck` and `pnpm build`.
+3. Open a pull request against `dev` describing what changed and how you verified it.
 
-Be part of building a better package manager for JavaScript developers!
+Open tasks and known bugs are in the [issues](https://github.com/callmegautam/flux/issues) tab.
 
--   Download the alpha
--   Share feedback or bug reports
--   Submit pull requests
--   Star the repository to show your support ⭐
+## License
 
----
-
-## 📄 License
-
-Flux is open-source software, licensed under the [MIT License](LICENSE).
-
----
-
-✅ **Note:** As an alpha project, Flux is rapidly evolving — expect frequent changes and improvements as we move toward a stable release.
+[MIT](LICENSE)
