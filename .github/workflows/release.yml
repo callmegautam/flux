@@ -37,6 +37,8 @@ jobs:
         permissions:
             contents: read
             id-token: write
+        env:
+            NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         steps:
             - uses: actions/checkout@v4
             - uses: pnpm/action-setup@v4
@@ -58,6 +60,12 @@ jobs:
                     exit 1
                   fi
 
-            - run: npm publish --provenance --access public
+            - name: Publish
+              if: env.NPM_TOKEN != ''
+              run: npm publish --provenance --access public
               env:
                   NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+            - name: Skip publish
+              if: env.NPM_TOKEN == ''
+              run: echo "NPM_TOKEN secret is not set; skipping npm publish." >> "$GITHUB_STEP_SUMMARY"
