@@ -98,9 +98,9 @@ To test the real global-install path:
 
 ```sh
 npm pack
-npm install -g ./fluxpm-<version>.tgz
+npm install -g ./iamgautamsuthar-flux-<version>.tgz
 flux --help
-npm uninstall -g fluxpm
+npm uninstall -g @iamgautamsuthar/flux
 ```
 
 ### Cache
@@ -176,11 +176,11 @@ If `--ff-only` is rejected, `main` has moved. Rebase `dev` onto it (`git rebase 
 
 ## Releasing
 
-Maintainers only. Flux ships to two places from one tag: **npm** (`fluxpm`) and **GitHub Releases** (standalone binaries).
+Maintainers only. Flux ships to two places from one tag: **npm** (`@iamgautamsuthar/flux`) and **GitHub Releases** (standalone binaries).
 
 ### One-time setup
 
-- An npm account with publish rights on `fluxpm`.
+- An npm account with publish rights on `@iamgautamsuthar/flux`.
 - For automated publishing, an `NPM_TOKEN` (Automation type) repository secret under **Settings → Secrets and variables → Actions**. Without it the release workflow still builds and uploads binaries, and simply skips the npm step.
 
 ### Steps
@@ -228,6 +228,14 @@ npm login
 npm publish
 ```
 
+The package is scoped, so it needs `--access public` on a first publish. That is set via `publishConfig` in `package.json`, so plain `npm publish` is enough.
+
+Publishing requires a second factor: the account has `two-factor auth: auth-and-writes`. npm opens a browser to confirm, which needs a real interactive terminal — it fails with `EOTP` when piped or run from a non-TTY. Use a backup code if you have no TTY:
+
+```sh
+npm publish --otp=YOUR-BACKUP-CODE
+```
+
 `prepublishOnly` regenerates the version and recompiles, so a stale `dist/` cannot be published. Check what will ship first:
 
 ```sh
@@ -241,7 +249,7 @@ Only `dist/`, `README.md`, and `LICENSE` are included, per the `files` field.
 Verify all three install paths:
 
 ```sh
-npm install -g fluxpm && flux --version
+npm install -g @iamgautamsuthar/flux && flux --version
 
 curl -fsSL https://raw.githubusercontent.com/callmegautam/flux/main/install.sh | sh
 

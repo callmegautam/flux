@@ -11,13 +11,13 @@ command -v curl >/dev/null 2>&1 || err "curl is required"
 case "$(uname -s)" in
     Linux)  OS=linux ;;
     Darwin) OS=darwin ;;
-    *)      err "unsupported OS: $(uname -s). Try: npm i -g fluxpm" ;;
+    *)      err "unsupported OS: $(uname -s). Try: npm i -g @iamgautamsuthar/flux" ;;
 esac
 
 case "$(uname -m)" in
     x86_64|amd64)  ARCH=x64 ;;
     arm64|aarch64) ARCH=arm64 ;;
-    *)             err "unsupported architecture: $(uname -m). Try: npm i -g fluxpm" ;;
+    *)             err "unsupported architecture: $(uname -m). Try: npm i -g @iamgautamsuthar/flux" ;;
 esac
 
 VERSION="${FLUX_VERSION:-}"

@@ -106,13 +106,13 @@ Flux is a lightweight, minimalistic package manager designed to streamline depen
 Requires Node.js 18+.
 
 ```sh
-npm install -g fluxpm
+npm install -g @iamgautamsuthar/flux
 ```
 
 Or try it without installing:
 
 ```sh
-npx fluxpm --help
+npx @iamgautamsuthar/flux --help
 ```
 
 ### Standalone binary
@@ -144,12 +144,12 @@ Both scripts install per-user and honour two environment variables:
 
 ### Updating
 
-Re-run the same command you installed with (`npm install -g fluxpm`, or the install script).
+Re-run the same command you installed with (`npm install -g @iamgautamsuthar/flux`, or the install script).
 
 ### Uninstalling
 
 ```sh
-npm uninstall -g fluxpm        # npm install
+npm uninstall -g @iamgautamsuthar/flux        # npm install
 rm ~/.local/bin/flux           # standalone binary (Unix)
 ```
 

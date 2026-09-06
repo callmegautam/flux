@@ -5,7 +5,7 @@ $repo = 'callmegautam/flux'
 $installDir = if ($env:FLUX_INSTALL_DIR) { $env:FLUX_INSTALL_DIR } else { Join-Path $env:LOCALAPPDATA 'flux\bin' }
 
 if ([Environment]::Is64BitOperatingSystem -eq $false) {
-    throw 'Flux binaries require 64-bit Windows. Alternative: npm i -g fluxpm'
+    throw 'Flux binaries require 64-bit Windows. Alternative: npm i -g @iamgautamsuthar/flux'
 }
 
 $version = $env:FLUX_VERSION
