@@ -1,15 +1,19 @@
 import fs from 'fs';
-import * as tar from 'tar';
 import path from 'path';
 import logger from './logger.js';
+import { getErrorMessage } from './errors.js';
+import { writeFileAtomic } from '../store/atomic.js';
+import { unlinkRoot } from '../store/linker.js';
 import type { PackageJson } from '../types/package-json.js';
 
-const currentDir = process.cwd();
-const packageJsonPath = path.join(process.cwd(), 'package.json');
+export const packageJsonPathIn = (projectDir: string = process.cwd()): string =>
+    path.join(projectDir, 'package.json');
 
-export const readPackageJson = async (): Promise<PackageJson> => {
+export const readPackageJson = async (projectDir?: string): Promise<PackageJson> => {
+    const target = packageJsonPathIn(projectDir);
+
     try {
-        const fileContent = await fs.promises.readFile(packageJsonPath, 'utf8');
+        const fileContent = await fs.promises.readFile(target, 'utf8');
         const packageData = JSON.parse(fileContent) as PackageJson;
         return {
             ...packageData,
@@ -18,57 +22,43 @@ export const readPackageJson = async (): Promise<PackageJson> => {
         };
     } catch (error) {
         if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
-            await fs.promises.writeFile(
-                packageJsonPath,
-                JSON.stringify({ dependencies: {} }, null, 2),
-                'utf8'
-            );
+            await writeFileAtomic(target, `${JSON.stringify({ dependencies: {} }, null, 2)}\n`);
             return { dependencies: {}, devDependencies: {} };
-        } else {
-            logger.error(`Error while reading package.json: ${error}`);
         }
+        logger.error(`Error while reading package.json: ${getErrorMessage(error)}`);
         process.exit(1);
     }
 };
 
-export const writePackageJson = async (packageData: PackageJson): Promise<void> => {
+export const writePackageJson = async (
+    packageData: PackageJson,
+    projectDir?: string
+): Promise<void> => {
     try {
-        const formattedData = JSON.stringify(packageData, null, 2);
-        await fs.promises.writeFile(packageJsonPath, formattedData, 'utf8');
-    } catch (error) {
-        logger.error(`Error while writing package.json: ${error}`);
-        process.exit(1);
-    }
-};
+        const serializable: Record<string, unknown> = { ...packageData };
 
-export const extractPackage = async (packageName: string, filePath: string): Promise<void> => {
-    try {
-        const extractionPath = path.join(currentDir, 'node_modules', packageName);
-        const nodeModulesPath = path.join(currentDir, 'node_modules');
-
-        await fs.promises.mkdir(nodeModulesPath, { recursive: true });
-        await fs.promises.mkdir(extractionPath, { recursive: true });
-
-        await tar.x({ file: filePath, C: extractionPath, strip: 1 });
-    } catch (error) {
-        logger.error(`Error while extracting package: ${error}`);
-        process.exit(1);
-    }
-};
-
-export const removePackageFromModule = async (packageName: string): Promise<void> => {
-    try {
-        const packagePath = path.join(currentDir, 'node_modules', packageName);
-        try {
-            await fs.promises.access(packagePath);
-        } catch {
-            logger.error(`Package ${packageName} is not found.`);
-            process.exit(1);
+        if (Object.keys(packageData.devDependencies ?? {}).length === 0) {
+            delete serializable['devDependencies'];
         }
 
-        await fs.promises.rm(packagePath, { recursive: true, force: true });
+        await writeFileAtomic(
+            packageJsonPathIn(projectDir),
+            `${JSON.stringify(serializable, null, 2)}\n`
+        );
     } catch (error) {
-        logger.error(`Error while deleting package: ${error}`);
+        logger.error(`Error while writing package.json: ${getErrorMessage(error)}`);
+        process.exit(1);
+    }
+};
+
+export const removePackageFromModule = async (
+    packageName: string,
+    projectDir: string = process.cwd()
+): Promise<void> => {
+    try {
+        await unlinkRoot(projectDir, packageName);
+    } catch (error) {
+        logger.error(`Error while deleting package: ${getErrorMessage(error)}`);
         process.exit(1);
     }
 };

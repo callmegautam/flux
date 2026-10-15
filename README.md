@@ -2,13 +2,14 @@
 
 A minimal package manager for JavaScript projects. Flux installs, updates, and removes npm packages from the command line.
 
-Flux is alpha software and is not ready for production use. It installs direct dependencies only; see [Limitations](#limitations).
+Flux is alpha software and is not ready for production use. See [Limitations](#limitations).
 
 ## Contents
 
 - [Installation](#installation)
 - [Commands](#commands)
 - [Configuration](#configuration)
+- [How installs work](#how-installs-work)
 - [Limitations](#limitations)
 - [Contributing](#contributing)
 - [License](#license)
@@ -76,6 +77,7 @@ rm ~/.local/bin/flux
 flux init                     Create a package.json
 flux install                  Install every dependency in package.json
 flux install <package>        Install one package and record it
+flux install <package>@<range>  Install a specific version or range
 flux uninstall [package]      Remove one package, or all of them
 flux reinstall [package]      Reinstall one package, or all of them
 flux update [package]         Update one package, or all of them
@@ -83,7 +85,10 @@ flux list                     List installed dependencies
 flux outdated                 Show packages with a newer version available
 flux info <package>           Show registry information for a package
 flux run <script>             Run a script from package.json
-flux clear                    Delete the download cache
+flux clear                    Delete every cache layer
+flux cache info               Show the size of each cache layer
+flux cache dir                Print the cache location
+flux cache clean [--metadata] [--tarballs] [--packages] [--all]
 ```
 
 Most commands have aliases, such as `add` for `install` and `ls` for `list`. Run `flux --help` for the full list.
@@ -98,11 +103,16 @@ flux update express
 flux uninstall express
 ```
 
-Pass `--flux` to `install` to resolve tarballs through the Flux registry instead of npm.
+`install` also accepts:
+
+- `--save-dev` (`-D`) to record the package under `devDependencies`
+- `--offline` to resolve only from the local cache and never hit the network
+- `--flux` to resolve tarballs through the Flux registry instead of npm
 
 ## Configuration
 
-Downloaded tarballs are cached per user:
+Registry metadata, tarballs, and extracted packages are cached per user and
+shared across every project on the machine:
 
 | Platform | Location |
 | --- | --- |
@@ -110,18 +120,62 @@ Downloaded tarballs are cached per user:
 | macOS | `~/Library/Caches/flux` |
 | Windows | `%LOCALAPPDATA%\flux\Cache` |
 
-Set `FLUX_CACHE_DIR` to override this. Run `flux clear` to empty the cache.
+Set `FLUX_CACHE_DIR` to override this. Run `flux cache info` to see how much
+each layer is using, and `flux cache clean --all` to empty it.
+
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `FLUX_CACHE_DIR` | platform default above | Cache and store location |
+| `FLUX_NETWORK_CONCURRENCY` | `16` | Parallel metadata and tarball requests |
+| `FLUX_FS_CONCURRENCY` | `32` | Parallel filesystem link operations |
+
+## How installs work
+
+Flux keeps four separate layers so that installing a package a second time — in
+any project on the machine — does no network, download, or extraction work.
+
+```
+flux add express
+      |
+      v
+metadata cache      ~/.cache/flux/metadata     "which version, and where?"
+      |
+      v
+tarball store       ~/.cache/flux/tarballs     "do I already have the archive?"
+      |
+      v
+package store       ~/.cache/flux/packages     "do I already have the files?"
+      |
+      v
+node_modules                                   hardlink + symlink
+```
+
+Each layer is content-addressed by the package's integrity hash and written
+atomically (staged under a temp name, then renamed), so an interrupted install
+can never leave a half-written tarball or a partially extracted package behind.
+
+`node_modules` uses a strict, pnpm-style layout: every package is hardlinked
+into `node_modules/.flux/<name>@<version>/`, and only your declared
+dependencies are symlinked at the top level. Conflicting versions coexist, and
+undeclared packages are not importable.
+
+Resolution results are written to `flux-lock.json`. When it matches your
+`package.json`, Flux skips resolution entirely and installs straight from the
+store. Commit it.
 
 ## Limitations
 
 Flux is an alpha release, and these gaps are worth knowing before you rely on it:
 
-- Only direct dependencies are installed. Flux does not walk the dependency tree, so most real packages will not work end to end.
-- There is no lockfile, so installs are not reproducible.
-- Version ranges are not resolved. A `^1.2.3` range installs the latest published version rather than the newest match within the range.
-- There is no test suite.
+- Lifecycle scripts (`preinstall`, `install`, `postinstall`) are never run, so
+  packages that compile native code at install time will not work.
+- Peer dependencies are resolved but not auto-installed.
+- Workspaces and monorepos are not supported.
+- The `os` and `cpu` fields are not enforced.
+- The store has no garbage collection; use `flux cache clean` to reclaim space.
 
-Planned work includes dependency resolution, a lockfile, registry search, a dependency tree viewer, parallel installs, workspace support, and vulnerability scanning.
+Planned work includes registry search, a dependency tree viewer, workspace
+support, and vulnerability scanning.
 
 ## Contributing
 

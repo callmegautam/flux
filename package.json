@@ -11,12 +11,15 @@
     "scripts": {
         "sync-version": "node scripts/sync-version.mjs",
         "prebuild": "node scripts/sync-version.mjs",
-        "build": "tsc",
+        "build": "tsc -p tsconfig.build.json",
         "typecheck": "tsc --noEmit",
         "dev": "tsx bin/flux.ts",
         "build:binaries": "node scripts/build-binaries.mjs",
-        "prepare": "node scripts/sync-version.mjs && tsc",
-        "prepublishOnly": "node scripts/sync-version.mjs && tsc"
+        "prepare": "node scripts/sync-version.mjs && tsc -p tsconfig.build.json",
+        "prepublishOnly": "node scripts/sync-version.mjs && tsc -p tsconfig.build.json",
+        "test": "tsx --test tests/**/*.test.ts",
+        "test:watch": "tsx --test --watch tests/**/*.test.ts",
+        "bench": "node scripts/benchmark.mjs"
     },
     "keywords": [
         "package manager",
@@ -32,11 +35,13 @@
     "dependencies": {
         "axios": "^1.7.9",
         "chalk": "^5.4.1",
+        "semver": "^7.8.5",
         "tar": "^7.4.3",
         "yargs": "^17.7.2"
     },
     "devDependencies": {
         "@types/node": "^26.4.1",
+        "@types/semver": "^7.8.0",
         "@types/yargs": "^17.0.35",
         "tsx": "^4.23.13",
         "typescript": "^7.0.2"

@@ -9,6 +9,7 @@ import outdated from './outdated.js';
 import run from './run.js';
 import info from './info.js';
 import clear from './clear.js';
+import cache from './cache.js';
 
 const commands: CommandModule<any, any>[] = [
     init,
@@ -21,6 +22,7 @@ const commands: CommandModule<any, any>[] = [
     run,
     info,
     clear,
+    cache,
 ];
 
 export default function registerCommands(yargs: Argv): void {

@@ -1,24 +1,33 @@
-import { readPackageJson, removePackageFromModule } from '../utils/fileSystem.js';
+import fs from 'fs';
+import path from 'path';
 import { checkIfPackageExists } from '../utils/packageJson.js';
-import { install } from './install.js';
 import { getErrorMessage } from '../utils/errors.js';
+import { unlinkRoot } from '../store/linker.js';
+import { relinkProject } from './relink.js';
 import logger from '../utils/logger.js';
 
 export const reinstall = async (packageName: string | null): Promise<void> => {
     try {
+        const projectDir = process.cwd();
+
         if (packageName === null) {
             await checkIfPackageExists();
-            const { dependencies } = await readPackageJson();
-            for (const dependency in dependencies) {
-                await reinstall(dependency);
-            }
-            logger.info('All packages reinstalled successfully.');
+            logger.info('Reinstalling all packages...');
+            await fs.promises.rm(path.join(projectDir, 'node_modules'), {
+                recursive: true,
+                force: true,
+            });
+            await relinkProject(projectDir);
+            logger.success('All packages reinstalled successfully.');
             return;
         }
+
         await checkIfPackageExists(packageName);
         logger.info(`Reinstalling ${packageName}...`);
-        await removePackageFromModule(packageName);
-        await install(packageName);
+
+        await unlinkRoot(projectDir, packageName);
+        await relinkProject(projectDir);
+        logger.success(`${packageName} reinstalled successfully.`);
     } catch (error) {
         logger.error(`Error while reinstalling package: ${getErrorMessage(error)}`);
         process.exit(1);

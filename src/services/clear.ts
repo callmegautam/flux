@@ -1,13 +1,5 @@
-import fs from 'fs';
-import logger from '../utils/logger.js';
-import { config } from '../config.js';
+import { cacheClean } from './cache.js';
 
 export const clearCache = async (): Promise<void> => {
-    try {
-        await fs.promises.rm(config.cachePath, { recursive: true, force: true });
-        logger.success('Cache cleared successfully.');
-    } catch (error) {
-        logger.error(`Error while clearing cache: ${error}`);
-        process.exit(1);
-    }
+    await cacheClean({ all: true });
 };
