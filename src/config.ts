@@ -20,8 +20,29 @@ const resolveCachePath = (): string => {
     return path.join(xdgCache, 'flux');
 };
 
+const resolveNetworkConcurrency = (): number => {
+    const raw = Number(process.env.FLUX_NETWORK_CONCURRENCY);
+    return Number.isFinite(raw) && raw >= 1 ? Math.floor(raw) : 16;
+};
+
+const resolveFsConcurrency = (): number => {
+    const raw = Number(process.env.FLUX_FS_CONCURRENCY);
+    return Number.isFinite(raw) && raw >= 1 ? Math.floor(raw) : 32;
+};
+
 export const config = {
     registry: 'https://registry.npmjs.org/',
-    cachePath: resolveCachePath(),
     backendAPI: 'http://api.gautamsuthar.in/flux/api/v1',
+    metadataTtlMs: 5 * 60 * 1000,
+    lockfileName: 'flux-lock.json',
+    virtualStoreDir: '.flux',
+    get cachePath(): string {
+        return resolveCachePath();
+    },
+    get networkConcurrency(): number {
+        return resolveNetworkConcurrency();
+    },
+    get fsConcurrency(): number {
+        return resolveFsConcurrency();
+    },
 };
