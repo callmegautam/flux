@@ -189,6 +189,10 @@ The short version:
 
 Open tasks and known bugs are in the [issues](https://github.com/callmegautam/flux/issues) tab.
 
+## Community
+
+Questions, ideas, or just want to see what else I'm building? Come by [The Basement](https://discord.gg/DTPcwVNN79), my Discord server for devs.
+
 ## License
 
 [MIT](LICENSE)
